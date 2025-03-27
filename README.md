@@ -1,5 +1,5 @@
 # SE2205Project
-- Group members
+Group members
 - Moe
 - Andy
 - Sahel
