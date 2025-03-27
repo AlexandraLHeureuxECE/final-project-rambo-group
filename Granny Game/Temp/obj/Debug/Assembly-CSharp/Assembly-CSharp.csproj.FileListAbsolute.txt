@@ -1,0 +1,9 @@
+/Users/andysu/Documents/final-project-rambo-group/Granny Game/Temp/bin/Debug/Assembly-CSharp.deps.json
+/Users/andysu/Documents/final-project-rambo-group/Granny Game/Temp/bin/Debug/Assembly-CSharp.dll
+/Users/andysu/Documents/final-project-rambo-group/Granny Game/Temp/bin/Debug/Assembly-CSharp.pdb
+/Users/andysu/Documents/final-project-rambo-group/Granny Game/Temp/obj/Debug/Assembly-CSharp/Assembly-CSharp.csproj.AssemblyReference.cache
+/Users/andysu/Documents/final-project-rambo-group/Granny Game/Temp/obj/Debug/Assembly-CSharp/Assembly-CSharp.GeneratedMSBuildEditorConfig.editorconfig
+/Users/andysu/Documents/final-project-rambo-group/Granny Game/Temp/obj/Debug/Assembly-CSharp/Assembly-CSharp.csproj.CoreCompileInputs.cache
+/Users/andysu/Documents/final-project-rambo-group/Granny Game/Temp/obj/Debug/Assembly-CSharp/Assembly-CSharp.sourcelink.json
+/Users/andysu/Documents/final-project-rambo-group/Granny Game/Temp/obj/Debug/Assembly-CSharp/Assembly-CSharp.dll
+/Users/andysu/Documents/final-project-rambo-group/Granny Game/Temp/obj/Debug/Assembly-CSharp/Assembly-CSharp.pdb
