@@ -1,0 +1,75 @@
+# macOS system file
+.DS_Store
+
+# Unity-specific cache/temp files
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+
+# In case your Unity project is nested inside "Granny Game"
+Granny Game/[Ll]ibrary/
+Granny Game/[Tt]emp/
+Granny Game/[Oo]bj/
+Granny Game/[Bb]uild/
+Granny Game/[Bb]uilds/
+Granny Game/[Ll]ogs/
+Granny Game/[Uu]ser[Ss]ettings/
+
+Granny Game/Assets/ALP_Assets/Realistic Terrain Textures Lite/Scenes/TerrainDATA/Terrain.asset
+Granny Game/Assets/ALP_Assets/Textures/BigTexture.tif
+
+# IDE and editor folders
+.idea/
+.vscode/
+.vs/
+.gradle/
+.consulo/
+
+# VS/JetBrains generated files
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Unity meta crash/cache files
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+sysinfo.txt
+
+# Unity build products
+*.apk
+*.aab
+*.app
+*.unitypackage
+*.unitypackage.meta
+
+# Crashlytics
+crashlytics-build.properties
+
+# Addressables
+[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+[Aa]ssets/[Ss]treamingAssets/aa.meta
+[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Optional: asset store tools
+# [Aa]ssets/AssetStoreTools*
+
+# Optional: JetBrains plugin
+[Aa]ssets/Plugins/Editor/JetBrains*
