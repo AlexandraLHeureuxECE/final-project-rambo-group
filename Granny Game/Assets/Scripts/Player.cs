@@ -27,8 +27,9 @@ public class Player : MonoBehaviour
     public Transform InteractorSource;
     public float InteractRange;
 
-    
+
     CharacterController characterController;
+
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -40,6 +41,7 @@ public class Player : MonoBehaviour
     {
 
         #region Handles Movment
+
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
@@ -49,9 +51,11 @@ public class Player : MonoBehaviour
         float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+
         #endregion
 
         #region Handles Jumping
+
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
             moveDirection.y = jumpPower;
@@ -65,9 +69,11 @@ public class Player : MonoBehaviour
         {
             moveDirection.y -= gravity * Time.deltaTime;
         }
+
         #endregion
 
         #region Handles Rotation
+
         characterController.Move(moveDirection * Time.deltaTime);
 
         if (canMove)
@@ -77,18 +83,31 @@ public class Player : MonoBehaviour
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
+
         #endregion
 
-        #region Handles Interaction
-        
-        if(Input.GetKeyDown(KeyCode.E)) {
-            Ray r = new Ray(InteractorSource.position, InteractorSource.forward); 
-                if (Physics.Raycast(r, out RaycastHit hitInfo, InteractRange)) {
-                    if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj)) {
-                        interactObj.Interact();
-                    }
+        //region Handles Interaction
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Debug.Log("E key pressed ✅");
+
+            Ray r = new Ray(InteractorSource.position, InteractorSource.forward);
+            Debug.DrawRay(r.origin, r.direction * InteractRange, Color.red, 2f);
+
+            if (Physics.Raycast(r, out RaycastHit hitInfo, InteractRange))
+            {
+                Debug.Log("Raycast HIT: " + hitInfo.collider.gameObject.name);
+
+                if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
+                {
+                    interactObj.Interact();
                 }
             }
+            else
+            {
+                Debug.Log("Raycast did NOT hit anything ❌");
+            }
         }
-        #endregion
+    }
 }
