@@ -1,14 +1,16 @@
 using UnityEngine;
 
-public class PotionPickup : MonoBehaviour
+public class PotionPickup : MonoBehaviour, IInteractable
 {
-    private void OnTriggerEnter(Collider other)
+    public void Interact()
     {
-        if (other.CompareTag("Player"))
+        Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
+        if (player != null)
         {
             PlayerStats.hasStrength = true;
-            Debug.Log("Potion drank. Player is now strong!");
-            Destroy(gameObject);
+            Debug.Log("Player drank the potion and gained strength!");
         }
+
+        Destroy(gameObject);
     }
 }

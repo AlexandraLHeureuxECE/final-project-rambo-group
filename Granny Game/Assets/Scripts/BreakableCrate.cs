@@ -1,23 +1,30 @@
 using UnityEngine;
+using UnityEngine;
 
-public class BreakableCrate : MonoBehaviour
+public class BreakableCrate : MonoBehaviour, IInteractable
 {
-    public GameObject itemInside; // Drag helmet or key prefab here
+    public bool hasKeyInside = false;
+    public GameObject keyPrefab;
 
-    private void OnMouseDown()
+    public void Interact()
     {
-        if (PlayerStats.hasStrength)
+        Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
+
+        if (player != null && PlayerStats.hasStrength)
         {
-            if (itemInside != null)
-            {
-                Instantiate(itemInside, transform.position + Vector3.up * 1.5f, Quaternion.identity);
-            }
             Debug.Log("Crate broken!");
+
+            if (hasKeyInside && keyPrefab != null)
+            {
+                Instantiate(keyPrefab, transform.position + Vector3.up, Quaternion.identity);
+                Debug.Log("Key dropped!");
+            }
+
             Destroy(gameObject);
         }
         else
         {
-            Debug.Log("I am not strong enough to break this...");
+            Debug.Log("You need more strength to break this crate.");
         }
     }
 }
