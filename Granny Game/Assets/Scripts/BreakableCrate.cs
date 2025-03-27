@@ -8,7 +8,7 @@ public class BreakableCrate : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if (PlayerStats.hasStrength)
+        if (PlayerStats.strength >= PlayerStats.strengthRequiredToBreak)
         {
             Debug.Log("Crate broken!");
 
@@ -21,7 +21,7 @@ public class BreakableCrate : MonoBehaviour, IInteractable
         }
         else
         {
-            Debug.Log("You need strength to break this crate.");
+            Debug.Log("Not strong enough to break crate. Strength: " + PlayerStats.strength);
         }
     }
 }
