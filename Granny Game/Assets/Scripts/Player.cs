@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 
-
 interface IInteractable {
     public void Interact();
 }
@@ -13,8 +12,8 @@ public class Player : MonoBehaviour
 {
     // variables for movement and camera
     public Camera playerCamera;
-    public float walkSpeed = 6f;
-    public float runSpeed = 12f;
+    public float walkSpeed = 1.5f;  // Reduced from 3f
+    public float runSpeed = 3f;     // Reduced from 6f
     public float jumpPower = 7f;
     public float gravity = 10f;
     public float lookSpeed = 2f;
@@ -26,9 +25,9 @@ public class Player : MonoBehaviour
     // variables for interaction
     public Transform InteractorSource;
     public float InteractRange;
-
     
     CharacterController characterController;
+    
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -38,15 +37,25 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-
-        #region Handles Movment
+        #region Handles Movement
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
         // Press Left Shift to run
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
-        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;
+        
+        // Only use W and S for forward/back movement
+        float verticalInput = 0f;
+        if (Input.GetKey(KeyCode.W)) verticalInput = 1f;
+        if (Input.GetKey(KeyCode.S)) verticalInput = -1f;
+        
+        // Only use A and D for left/right movement
+        float horizontalInput = 0f;
+        if (Input.GetKey(KeyCode.D)) horizontalInput = 1f;
+        if (Input.GetKey(KeyCode.A)) horizontalInput = -1f;
+        
+        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * verticalInput : 0;
+        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * horizontalInput : 0;
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
         #endregion
@@ -80,15 +89,17 @@ public class Player : MonoBehaviour
         #endregion
 
         #region Handles Interaction
-        
-        if(Input.GetKeyDown(KeyCode.E)) {
+        if(Input.GetKeyDown(KeyCode.E)) 
+        {
             Ray r = new Ray(InteractorSource.position, InteractorSource.forward); 
-                if (Physics.Raycast(r, out RaycastHit hitInfo, InteractRange)) {
-                    if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj)) {
-                        interactObj.Interact();
-                    }
+            if (Physics.Raycast(r, out RaycastHit hitInfo, InteractRange)) 
+            {
+                if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj)) 
+                {
+                    interactObj.Interact();
                 }
             }
         }
         #endregion
+    }
 }
