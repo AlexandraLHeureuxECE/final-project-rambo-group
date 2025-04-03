@@ -4,10 +4,10 @@ public class WindowInteraction : MonoBehaviour, IInteractable
 {
     private Dialogue dialogue;
     public string[] windowDialogue;
-    private bool canBreakWindow = false;
-    
+    private bool cannotBreakWindow = true;
+    private PadLockPassword _padLockPassword; 
     public void setCanBreak() {
-        canBreakWindow = true;
+        cannotBreakWindow = false;
     }
 
     void Start()
@@ -19,9 +19,12 @@ public class WindowInteraction : MonoBehaviour, IInteractable
     }
 
     public void Interact() {
-        if (dialogue != null && canBreakWindow == false)
-        {
+        if (dialogue != null && cannotBreakWindow)
+        {   
             dialogue.SetDialogue(windowDialogue); // Pass unique lines to Dialogue
+        }
+        if (_padLockPassword != null && _padLockPassword.PasswordCorrect && !cannotBreakWindow) {
+            Debug.Log("Escape to level 4");
         }
     }
 
