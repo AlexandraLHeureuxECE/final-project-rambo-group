@@ -11,6 +11,7 @@ interface IInteractable {
 public class Player : MonoBehaviour
 {
     // variables for movement and camera
+    public int playerHealth = 100;
     public Camera playerCamera;
     public float walkSpeed = 1.5f;  // Reduced from 3f
     public float runSpeed = 3f;     // Reduced from 6f
@@ -101,5 +102,21 @@ public class Player : MonoBehaviour
             }
         }
         #endregion
+    }
+    public void TakeDamage(int damage)
+    {
+        playerHealth -= damage;
+        Debug.Log("Player took damage! Current health: " + playerHealth);
+
+        if (playerHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Debug.Log("Player has been defeated!");
+        // You can add respawn logic here
     }
 }
