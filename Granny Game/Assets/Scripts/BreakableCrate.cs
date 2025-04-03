@@ -12,16 +12,21 @@ public class BreakableCrate : MonoBehaviour, IInteractable
         {
             Debug.Log("Crate broken!");
 
-            if (hasKeyInside && keyPrefab != null)
+            Rigidbody[] pieces = GetComponentsInChildren<Rigidbody>();
+            foreach (Rigidbody rb in pieces)
             {
-                Instantiate(keyPrefab, transform.position + Vector3.up, Quaternion.identity);
+                rb.isKinematic = false;
+                rb.useGravity = true;
             }
 
-            Destroy(gameObject);
+            // Optionally disable the main collider or script here
+            GetComponent<Collider>().enabled = false;
+            Destroy(this); // optional: prevent repeat interaction
         }
         else
         {
-            Debug.Log("Not strong enough to break crate. Strength: " + PlayerStats.strength);
+            Debug.Log("Not strong enough to break crate.");
         }
     }
+
 }
