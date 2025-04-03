@@ -6,6 +6,10 @@ TagManager:
   tags:
   - MoveRuller
   - chestTop
+  - padlock
+  - bat
+  - hammer
+  - broom
   layers:
   - Default
   - TransparentFX
@@ -13,7 +17,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Hittable
   - 
   - 
   - 

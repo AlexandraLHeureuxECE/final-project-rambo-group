@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using UnityEngine;
 
 interface IInteractable {
@@ -25,14 +24,30 @@ public class Player : MonoBehaviour
     // variables for interaction
     public Transform InteractorSource;
     public float InteractRange;
-    
+
+    // variables for attacking
+    public float attackDistance = 3f; 
+    public float attackDelay = 0.4f;
+    public float attackSpeed = 1f;
+    public int attackDamage = 1;
+    public LayerMask attackLayer;
+    public GameObject hitEffect;
+
+    bool attacking = false;
+    bool readyToAttack = true;
+    int attackCount;
+
+    // animation
+
     CharacterController characterController;
-    
+    private Animator animator;
     void Start()
     {
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        animator = GameObject.Find("MetalBat").GetComponent<Animator>();  // Get the Animator component
+
     }
 
     void Update()
@@ -101,5 +116,49 @@ public class Player : MonoBehaviour
             }
         }
         #endregion
+
+        #region Handles Attacking
+        if (Input.GetMouseButtonDown(0) && readyToAttack)
+        {
+            Attack();
+        }
+        #endregion
+    }
+
+    public void Attack() 
+    {
+        if (!readyToAttack || attacking) return;
+        
+        readyToAttack = false;
+        attacking = true;
+
+        animator.SetTrigger("Attack");  // Trigger the "Attack" animation
+
+        Invoke(nameof(ResetAttack), attackSpeed);
+        Invoke(nameof(AttackRaycast), attackDelay);
+        
+    }
+
+    void ResetAttack() 
+    {
+        attacking = false;
+        readyToAttack = true;
+    }
+    private void AttackRaycast() {
+        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+        Debug.DrawRay(ray.origin, ray.direction * attackDistance, Color.red, 0.5f);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, attackDistance, attackLayer))
+        {
+            if (hit.transform.TryGetComponent<Actor>(out Actor actor))
+            {
+                actor.TakeDamage(attackDamage);
+            }
+        }
+    }
+
+    void HitTarget(Vector3 position) 
+    {
+        Debug.Log("Attack hit at position: " + position);
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class WeaponSelectorUI : MonoBehaviour
@@ -13,6 +14,9 @@ public class WeaponSelectorUI : MonoBehaviour
     private PadLockPassword _padLockPassword;
     private GameObject chestTop; // Declare here but initialize in Start
     private GameObject padlock; // Declare here but initialize in Start
+    private GameObject metalBat; // Add reference to MetalBat
+    private GameObject hammer;
+    private GameObject broom;
 
 
     void Start()
@@ -21,7 +25,19 @@ public class WeaponSelectorUI : MonoBehaviour
         chestTop = GameObject.FindWithTag("chestTop"); // Initialize here
         padlock = GameObject.FindWithTag("padlock"); // Initialize here
 
-        
+        // setting weapons disabled at first
+        metalBat = GameObject.FindWithTag("bat");
+        metalBat.SetActive(false);
+        hammer = GameObject.FindWithTag("hammer");
+        hammer.SetActive(false);
+        broom = GameObject.FindWithTag("broom");
+        broom.SetActive(false);
+
+
+        if (metalBat == null)
+        {   
+            Debug.LogError("MetalBat not found with tag 'bat'");
+        }
         if (chestTop == null)
         {
             Debug.LogError("Could not find object with tag 'chestTop'");
@@ -71,8 +87,32 @@ public class WeaponSelectorUI : MonoBehaviour
         Debug.Log("Closing Weapon Selector UI");
 
         uiPanel.SetActive(false);
+
+        switch(weaponName) {
+            case "Weapon 1": 
+                if (hammer != null) {
+                    hammer.SetActive(true);
+                    Debug.Log("Equipping hammer");
+                } break;
+            case "Weapon 2": 
+                if (metalBat != null) {
+                    metalBat.SetActive(true);
+                    Debug.Log("Equipping bat");
+                } break;
+            case "Weapon 3": 
+                if (broom != null) {
+                    broom.SetActive(true);
+                    Debug.Log("Equipping Broom");
+                } break;
+            default:
+            Debug.Log("No weapon found for " + weaponName);
+            break;
+        }
+
         isUIOpen = false;  
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
+        
     }
 }
