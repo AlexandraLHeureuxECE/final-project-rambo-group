@@ -12,8 +12,8 @@ public class Player : MonoBehaviour
 {
     // variables for movement and camera
     public Camera playerCamera;
-    public float walkSpeed = 1.5f;  // Reduced from 3f
-    public float runSpeed = 3f;     // Reduced from 6f
+    public float walkSpeed = 1.5f;  
+    public float runSpeed = 3f;     
     public float jumpPower = 7f;
     public float gravity = 10f;
     public float lookSpeed = 2f;

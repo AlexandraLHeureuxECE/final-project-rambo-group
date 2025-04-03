@@ -9,14 +9,25 @@ public class WeaponSelectorUI : MonoBehaviour
     public Button weapon3Button;
 
     private bool isUIOpen = false;
-    private bool hasUIBeenOpened = false; // New flag to ensure UI only opens once
-    private PadLockPassword _padLockPassword; // Reference to PadLockPassword
+    private bool hasUIBeenOpened = false;
+    private PadLockPassword _padLockPassword;
+    private GameObject chestTop; // Declare here but initialize in Start
+    private GameObject padlock; // Declare here but initialize in Start
+
 
     void Start()
     {
-        _padLockPassword = FindObjectOfType<PadLockPassword>(); // Find the PadLockPassword script
+        _padLockPassword = FindObjectOfType<PadLockPassword>();
+        chestTop = GameObject.FindWithTag("chestTop"); // Initialize here
+        padlock = GameObject.FindWithTag("padlock"); // Initialize here
 
-        uiPanel.SetActive(false); // Start hidden
+        
+        if (chestTop == null)
+        {
+            Debug.LogError("Could not find object with tag 'chestTop'");
+        }
+
+        uiPanel.SetActive(false);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -27,7 +38,6 @@ public class WeaponSelectorUI : MonoBehaviour
 
     void Update()
     {
-        // only open UI once when password is correct and UI has not been opened yet
         if (_padLockPassword != null && _padLockPassword.PasswordCorrect && !isUIOpen && !hasUIBeenOpened)
         {
             OpenUI();
@@ -43,18 +53,26 @@ public class WeaponSelectorUI : MonoBehaviour
         uiPanel.SetActive(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        
+        if (chestTop != null && padlock != null)
+        {
+            chestTop.SetActive(false);
+            padlock.SetActive(false);
+        }
+        else
+        {
+            Debug.LogWarning("chestTop reference is null when trying to disable it");
+        }
     }
 
     void SelectWeapon(string weaponName)
     {
         Debug.Log("Weapon Selected: " + weaponName);
-
         Debug.Log("Closing Weapon Selector UI");
 
         uiPanel.SetActive(false);
         isUIOpen = false;  
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-
     }
 }
