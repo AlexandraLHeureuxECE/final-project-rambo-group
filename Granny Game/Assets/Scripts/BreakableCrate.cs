@@ -1,14 +1,14 @@
 using UnityEngine;
 
-
 public class BreakableCrate : MonoBehaviour, IInteractable
 {
+    public int strengthRequired = 50;
     public bool hasKeyInside = false;
     public GameObject keyPrefab;
 
     public void Interact()
     {
-        if (PlayerStats.strength >= PlayerStats.strengthRequiredToBreak)
+        if (PlayerStatsManager.Instance.GetStrengthSystem().HasEnough(strengthRequired))
         {
             Debug.Log("Crate broken!");
 
@@ -19,14 +19,18 @@ public class BreakableCrate : MonoBehaviour, IInteractable
                 rb.useGravity = true;
             }
 
-            // Optionally disable the main collider or script here
+            if (hasKeyInside && keyPrefab != null)
+            {
+                Instantiate(keyPrefab, transform.position + Vector3.up, Quaternion.identity);
+                Debug.Log("Key dropped!");
+            }
+
             GetComponent<Collider>().enabled = false;
-            Destroy(this); // optional: prevent repeat interaction
+            Destroy(this); // optional: disable interaction after break
         }
         else
         {
-            Debug.Log("Not strong enough to break crate.");
+            Debug.Log("Not enough strength to break the crate!");
         }
     }
-
 }
