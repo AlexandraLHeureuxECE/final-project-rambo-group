@@ -12,6 +12,9 @@ public class BreakableCrate : MonoBehaviour, IInteractable
         {
             Debug.Log("Crate broken!");
 
+            DialogueManager.Instance.ShowDialogue("💥 Oh yes, I’m strong now!");
+
+            // Break visuals
             Rigidbody[] pieces = GetComponentsInChildren<Rigidbody>();
             foreach (Rigidbody rb in pieces)
             {
@@ -21,16 +24,22 @@ public class BreakableCrate : MonoBehaviour, IInteractable
 
             if (hasKeyInside && keyPrefab != null)
             {
-                Instantiate(keyPrefab, transform.position + Vector3.up, Quaternion.identity);
-                Debug.Log("Key dropped!");
+                GameObject key = Instantiate(keyPrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity);
+
+                KeyPickupVisual keyVisual = key.GetComponent<KeyPickupVisual>();
+                if (keyVisual != null)
+                {
+                    keyVisual.Activate(); // 🔥 Trigger animation now
+                }
             }
 
+
             GetComponent<Collider>().enabled = false;
-            Destroy(this); // optional: disable interaction after break
+            Destroy(this); // Disable script
         }
         else
         {
-            Debug.Log("Not enough strength to break the crate!");
+            DialogueManager.Instance.ShowDialogue("😩 I don't have the strength... maybe I need to drink something.");
         }
     }
 }

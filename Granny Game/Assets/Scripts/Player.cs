@@ -32,9 +32,19 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        DialogueManager.Instance.ShowDialogue("You wake up in a mysterious basement...");
+        StartCoroutine(HideDialogueAfterDelay(3f));
+
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        
+        IEnumerator HideDialogueAfterDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            DialogueManager.Instance.HideDialogue();
+        }
+
     }
 
     void Update()
