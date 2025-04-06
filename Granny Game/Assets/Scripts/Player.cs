@@ -27,9 +27,7 @@ public class Player : MonoBehaviour
     public Transform InteractorSource;
     public float InteractRange;
 
-
     CharacterController characterController;
-
     void Start()
     {
         DialogueManager.Instance.ShowDialogue("You wake up in a mysterious basement...");
@@ -49,8 +47,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-
-        #region Handles Movment
+        #region Handles Movement
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
@@ -115,6 +112,7 @@ public class Player : MonoBehaviour
         }
         #endregion
     }
+<<<<<<< HEAD
     public void TakeDamage(int damage)
     {
         playerHealth -= damage;
