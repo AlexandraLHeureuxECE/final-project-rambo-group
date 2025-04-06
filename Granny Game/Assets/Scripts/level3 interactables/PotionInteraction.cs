@@ -2,29 +2,31 @@ using UnityEngine;
 
 public class PotionInteraction : MonoBehaviour, IInteractable
 {
+    public GameObject potionObject;
     private Dialogue dialogue;
     public string[] potionDialogue;
-    Player player;
+    private Player player;
+    private WindowInteraction windowInteraction;
+
     void Start()
     {
-        if (dialogue == null)
-        {
-            dialogue = Object.FindFirstObjectByType<Dialogue>(); 
-        }
+        dialogue = FindObjectOfType<Dialogue>(); 
+        player = FindObjectOfType<Player>();
+        windowInteraction = FindObjectOfType<WindowInteraction>(); 
     }
 
-    public void Interact() {
+    public void Interact() 
+    {
         if (dialogue != null)
         {
-            dialogue.SetDialogue(potionDialogue); // Pass unique lines to Dialogue
-            player.walkSpeed = 8f;
-            player.runSpeed = 14f;
+            dialogue.SetDialogue(potionDialogue); 
+            
+            player.walkSpeed = 6f;
+            player.runSpeed = 12f;
+            
+            gameObject.SetActive(false);
+            
+            windowInteraction.setCanBreak();
         }
-    }
-
-
-    void Update()
-    {
-        
     }
 }
