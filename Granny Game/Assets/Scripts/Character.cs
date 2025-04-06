@@ -48,10 +48,6 @@ public class Character : MonoBehaviour
         {
             moveDirection.y = jumpPower;
         }
-        else
-        {
-            moveDirection.y = moveDirection.y;
-        }
 
         if (!characterController.isGrounded)
         {
@@ -59,4 +55,5 @@ public class Character : MonoBehaviour
         }
     }
 }
+
 
