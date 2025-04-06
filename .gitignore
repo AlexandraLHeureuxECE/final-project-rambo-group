@@ -19,6 +19,7 @@ Granny Game/Library/
 /Build/
 /Logs/
 /UserSettings/
+*.log
 *.csproj
 *.unityproj
 *.sln
