@@ -6,33 +6,27 @@ public class PotionInteraction : MonoBehaviour, IInteractable
     private Dialogue dialogue;
     public string[] potionDialogue;
     private Player player;
+    private WindowInteraction windowInteraction;
 
     void Start()
     {
-        // Find the Dialogue component
-        if (dialogue == null)
-        {
-            dialogue = FindObjectOfType<Dialogue>(); 
-        }
-        
-        // Find the Player component (make sure to assign this if possible)
-        if (player == null)
-        {
-            player = FindObjectOfType<Player>();
-        }
+        dialogue = FindObjectOfType<Dialogue>(); 
+        player = FindObjectOfType<Player>();
+        windowInteraction = FindObjectOfType<WindowInteraction>(); 
     }
 
     public void Interact() 
     {
         if (dialogue != null)
         {
-            dialogue.SetDialogue(potionDialogue); // Pass unique lines to Dialogue
+            dialogue.SetDialogue(potionDialogue); 
             
-            player.walkSpeed = 8f;
-            player.runSpeed = 14f;
+            player.walkSpeed = 6f;
+            player.runSpeed = 12f;
             
             gameObject.SetActive(false);
             
+            windowInteraction.setCanBreak();
         }
     }
 }

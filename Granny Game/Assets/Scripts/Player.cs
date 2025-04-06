@@ -10,8 +10,8 @@ interface IInteractable {
 public class Player : MonoBehaviour
 {
     public Camera playerCamera;
-    public float walkSpeed = 1.5f;
-    public float runSpeed = 3f;
+    public float walkSpeed = 3f;
+    public float runSpeed = 6f;
     public float jumpPower = 7f;
     public float gravity = 10f;
     public float lookSpeed = 2f;
@@ -51,6 +51,9 @@ public class Player : MonoBehaviour
         hammerAnimator = GameObject.Find("HammerAnimator").GetComponent<Animator>();
         broomAnimator = GameObject.Find("BroomAnimator").GetComponent<Animator>();
 
+        walkSpeed = 3f;
+        runSpeed = 6f;
+
         // CHANGE WEAPON STATS HERE IF NEEDED
         weaponStats = new Dictionary<string, WeaponStats>
         {
@@ -58,6 +61,7 @@ public class Player : MonoBehaviour
             { "Weapon 2", new WeaponStats { name = "Metal Bat", damage = 5, range = 3f, attackSpeed = 1f } },
             { "Weapon 3", new WeaponStats { name = "Broom", damage = 3, range = 6f, attackSpeed = 0.5f } }
         };
+
     }
 
     void Update()
