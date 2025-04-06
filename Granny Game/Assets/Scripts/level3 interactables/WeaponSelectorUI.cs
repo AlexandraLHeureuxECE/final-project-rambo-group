@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class WeaponSelectorUI : MonoBehaviour
@@ -9,39 +8,31 @@ public class WeaponSelectorUI : MonoBehaviour
     public Button weapon2Button;
     public Button weapon3Button;
 
+    public static string CurrentWeapon = "";
+
     private bool isUIOpen = false;
     private bool hasUIBeenOpened = false;
+
     private PadLockPassword _padLockPassword;
-    private GameObject chestTop; // Declare here but initialize in Start
-    private GameObject padlock; // Declare here but initialize in Start
-    private GameObject metalBat; // Add reference to MetalBat
+    private GameObject chestTop;
+    private GameObject padlock;
+    private GameObject metalBat;
     private GameObject hammer;
     private GameObject broom;
-
 
     void Start()
     {
         _padLockPassword = FindObjectOfType<PadLockPassword>();
-        chestTop = GameObject.FindWithTag("chestTop"); // Initialize here
-        padlock = GameObject.FindWithTag("padlock"); // Initialize here
+        chestTop = GameObject.FindWithTag("chestTop");
+        padlock = GameObject.FindWithTag("padlock");
 
-        // setting weapons disabled at first
         metalBat = GameObject.FindWithTag("bat");
-        metalBat.SetActive(false);
         hammer = GameObject.FindWithTag("hammer");
-        hammer.SetActive(false);
         broom = GameObject.FindWithTag("broom");
-        broom.SetActive(false);
 
-
-        if (metalBat == null)
-        {   
-            Debug.LogError("MetalBat not found with tag 'bat'");
-        }
-        if (chestTop == null)
-        {
-            Debug.LogError("Could not find object with tag 'chestTop'");
-        }
+        metalBat?.SetActive(false);
+        hammer?.SetActive(false);
+        broom?.SetActive(false);
 
         uiPanel.SetActive(false);
         Cursor.visible = false;
@@ -54,7 +45,7 @@ public class WeaponSelectorUI : MonoBehaviour
 
     void Update()
     {
-        if (_padLockPassword != null && _padLockPassword.PasswordCorrect && !isUIOpen && !hasUIBeenOpened)
+        if ((_padLockPassword != null && _padLockPassword.PasswordCorrect && !isUIOpen && !hasUIBeenOpened) || Input.GetKeyDown(KeyCode.P))
         {
             OpenUI();
         }
@@ -62,57 +53,36 @@ public class WeaponSelectorUI : MonoBehaviour
 
     void OpenUI()
     {
-        Debug.Log("Opening Weapon Selector UI");
-
-        isUIOpen = true;  
-        hasUIBeenOpened = true;  
+        isUIOpen = true;
+        hasUIBeenOpened = true;
         uiPanel.SetActive(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        
-        if (chestTop != null && padlock != null)
-        {
-            chestTop.SetActive(false);
-            padlock.SetActive(false);
-        }
-        else
-        {
-            Debug.LogWarning("chestTop reference is null when trying to disable it");
-        }
+
+        chestTop?.SetActive(false);
+        padlock?.SetActive(false);
     }
 
     void SelectWeapon(string weaponName)
     {
-        Debug.Log("Weapon Selected: " + weaponName);
-        Debug.Log("Closing Weapon Selector UI");
+        CurrentWeapon = weaponName;
 
-        uiPanel.SetActive(false);
+        metalBat?.SetActive(false);
+        hammer?.SetActive(false);
+        broom?.SetActive(false);
 
-        switch(weaponName) {
-            case "Weapon 1": 
-                if (hammer != null) {
-                    hammer.SetActive(true);
-                    Debug.Log("Equipping hammer");
-                } break;
-            case "Weapon 2": 
-                if (metalBat != null) {
-                    metalBat.SetActive(true);
-                    Debug.Log("Equipping bat");
-                } break;
-            case "Weapon 3": 
-                if (broom != null) {
-                    broom.SetActive(true);
-                    Debug.Log("Equipping Broom");
-                } break;
-            default:
-            Debug.Log("No weapon found for " + weaponName);
-            break;
+        switch (weaponName)
+        {
+            case "Weapon 1": hammer?.SetActive(true); break;
+            case "Weapon 2": metalBat?.SetActive(true); break;
+            case "Weapon 3": broom?.SetActive(true); break;
         }
 
-        isUIOpen = false;  
+        FindObjectOfType<Player>().UpdateWeaponStats();
+
+        uiPanel.SetActive(false);
+        isUIOpen = false;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-
-        
     }
 }
