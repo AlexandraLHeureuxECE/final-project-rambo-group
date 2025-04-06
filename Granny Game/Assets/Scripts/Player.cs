@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 
-
 interface IInteractable {
     public void Interact();
 }
@@ -12,9 +11,10 @@ interface IInteractable {
 public class Player : MonoBehaviour
 {
     // variables for movement and camera
+    public int playerHealth = 100;
     public Camera playerCamera;
-    public float walkSpeed = 6f;
-    public float runSpeed = 12f;
+    public float walkSpeed = 1.5f;  // Reduced from 3f
+    public float runSpeed = 3f;     // Reduced from 6f
     public float jumpPower = 7f;
     public float gravity = 10f;
     public float lookSpeed = 2f;
@@ -51,21 +51,29 @@ public class Player : MonoBehaviour
     {
 
         #region Handles Movment
-
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
         // Press Left Shift to run
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
-        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;
+        
+        // Only use W and S for forward/back movement
+        float verticalInput = 0f;
+        if (Input.GetKey(KeyCode.W)) verticalInput = 1f;
+        if (Input.GetKey(KeyCode.S)) verticalInput = -1f;
+        
+        // Only use A and D for left/right movement
+        float horizontalInput = 0f;
+        if (Input.GetKey(KeyCode.D)) horizontalInput = 1f;
+        if (Input.GetKey(KeyCode.A)) horizontalInput = -1f;
+        
+        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * verticalInput : 0;
+        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * horizontalInput : 0;
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
-
         #endregion
 
         #region Handles Jumping
-
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
             moveDirection.y = jumpPower;
@@ -79,11 +87,9 @@ public class Player : MonoBehaviour
         {
             moveDirection.y -= gravity * Time.deltaTime;
         }
-
         #endregion
 
         #region Handles Rotation
-
         characterController.Move(moveDirection * Time.deltaTime);
 
         if (canMove)
@@ -93,31 +99,36 @@ public class Player : MonoBehaviour
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
-
         #endregion
 
-        //region Handles Interaction
-
-        if (Input.GetKeyDown(KeyCode.E))
+        #region Handles Interaction
+        if(Input.GetKeyDown(KeyCode.E)) 
         {
-            Debug.Log("E key pressed ✅");
-
-            Ray r = new Ray(InteractorSource.position, InteractorSource.forward);
-            Debug.DrawRay(r.origin, r.direction * InteractRange, Color.red, 2f);
-
-            if (Physics.Raycast(r, out RaycastHit hitInfo, InteractRange))
+            Ray r = new Ray(InteractorSource.position, InteractorSource.forward); 
+            if (Physics.Raycast(r, out RaycastHit hitInfo, InteractRange)) 
             {
-                Debug.Log("Raycast HIT: " + hitInfo.collider.gameObject.name);
-
-                if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
+                if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj)) 
                 {
                     interactObj.Interact();
                 }
             }
-            else
-            {
-                Debug.Log("Raycast did NOT hit anything ❌");
-            }
         }
+        #endregion
+    }
+    public void TakeDamage(int damage)
+    {
+        playerHealth -= damage;
+        Debug.Log("Player took damage! Current health: " + playerHealth);
+
+        if (playerHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Debug.Log("Player has been defeated!");
+        // You can add respawn logic here
     }
 }
