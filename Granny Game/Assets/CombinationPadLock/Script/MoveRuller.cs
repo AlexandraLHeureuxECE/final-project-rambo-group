@@ -22,8 +22,8 @@ public class MoveRuller : MonoBehaviour
 
     void Awake()
     {
-        _lockPassword = FindObjectOfType<PadLockPassword>();
-        _pLockColor = FindObjectOfType<PadLockEmissionColor>();
+        _lockPassword = Object.FindFirstObjectByType<PadLockPassword>();
+        _pLockColor = Object.FindFirstObjectByType<PadLockEmissionColor>();
 
         _rullers.Add(GameObject.Find("Ruller1"));
         _rullers.Add(GameObject.Find("Ruller2"));
@@ -44,7 +44,7 @@ public class MoveRuller : MonoBehaviour
 
     void MoveRulles()
     {
-        if (Input.GetKeyDown(KeyCode.D)) 
+        if (Input.GetKeyDown(KeyCode.RightArrow)) 
         {
             _isActveEmission = true;
             _changeRuller ++;
@@ -55,7 +55,7 @@ public class MoveRuller : MonoBehaviour
                 _numberRuller = 0;
             }
         }
-        if (Input.GetKeyDown(KeyCode.A)) 
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) 
         {
             _isActveEmission = true;
             _changeRuller --;
@@ -91,7 +91,7 @@ public class MoveRuller : MonoBehaviour
 
     void RotateRullers()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             _isActveEmission = true;
             _scroolRuller = 36;
@@ -105,7 +105,7 @@ public class MoveRuller : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             _isActveEmission = true;
             _scroolRuller = 36;

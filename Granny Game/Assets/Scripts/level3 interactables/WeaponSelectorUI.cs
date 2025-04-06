@@ -7,12 +7,15 @@ public class WeaponSelectorUI : MonoBehaviour
     public Button weapon1Button;
     public Button weapon2Button;
     public Button weapon3Button;
-    public KeyCode openKey = KeyCode.Q; // Press Q to open weapon selector
 
     private bool isUIOpen = false;
+    private bool hasUIBeenOpened = false; // New flag to ensure UI only opens once
+    private PadLockPassword _padLockPassword; // Reference to PadLockPassword
 
     void Start()
     {
+        _padLockPassword = FindObjectOfType<PadLockPassword>(); // Find the PadLockPassword script
+
         uiPanel.SetActive(false); // Start hidden
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -24,7 +27,8 @@ public class WeaponSelectorUI : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(openKey) && !isUIOpen)
+        // only open UI once when password is correct and UI has not been opened yet
+        if (_padLockPassword != null && _padLockPassword.PasswordCorrect && !isUIOpen && !hasUIBeenOpened)
         {
             OpenUI();
         }
@@ -32,7 +36,10 @@ public class WeaponSelectorUI : MonoBehaviour
 
     void OpenUI()
     {
-        isUIOpen = true;
+        Debug.Log("Opening Weapon Selector UI");
+
+        isUIOpen = true;  
+        hasUIBeenOpened = true;  
         uiPanel.SetActive(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -41,13 +48,13 @@ public class WeaponSelectorUI : MonoBehaviour
     void SelectWeapon(string weaponName)
     {
         Debug.Log("Weapon Selected: " + weaponName);
-        uiPanel.SetActive(false);
-        isUIOpen = false;
 
+        Debug.Log("Closing Weapon Selector UI");
+
+        uiPanel.SetActive(false);
+        isUIOpen = false;  
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        // Call your weapon equip logic here if needed
-        // EquipWeapon(weaponName);
     }
 }
