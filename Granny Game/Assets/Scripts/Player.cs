@@ -27,24 +27,25 @@ public class Player : MonoBehaviour
     public Transform InteractorSource;
     public float InteractRange;
 
-
     CharacterController characterController;
 
     void Start()
     {
-        DialogueManager.Instance.ShowDialogue("You wake up in a mysterious basement...");
+        DialogueManager.Instance.ShowDialogue("Ah! What happened? Where am I? I need to get out. Let me examine " +
+                                              "everything here");
         StartCoroutine(HideDialogueAfterDelay(3f));
 
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
+
+        PlayerStats.speedMultiplier = 0.5f; // Start at half speed
+
         IEnumerator HideDialogueAfterDelay(float delay)
         {
             yield return new WaitForSeconds(delay);
             DialogueManager.Instance.HideDialogue();
         }
-
     }
 
     void Update()
@@ -102,19 +103,54 @@ public class Player : MonoBehaviour
         #endregion
 
         #region Handles Interaction
-        if(Input.GetKeyDown(KeyCode.E)) 
+
+        Ray r = new Ray(InteractorSource.position, InteractorSource.forward);
+        Debug.DrawRay(r.origin, r.direction * InteractRange, Color.red, 2f);
+
+        if (Physics.Raycast(r, out RaycastHit hitInfo, InteractRange))
         {
-            Ray r = new Ray(InteractorSource.position, InteractorSource.forward); 
-            if (Physics.Raycast(r, out RaycastHit hitInfo, InteractRange)) 
+            Debug.Log("Raycast HIT: " + hitInfo.collider.gameObject.name);
+
+            // Hide all helmet labels first
+            foreach (var helmetPickup in FindObjectsOfType<HelmetPickup>())
             {
-                if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj)) 
+                helmetPickup.HideLabel();
+            }
+
+            // Show label only for the one being aimed at
+            if (hitInfo.collider.gameObject.TryGetComponent(out HelmetPickup targetedHelmet))
+            {
+                targetedHelmet.ShowLabel();
+
+                // Interact if E is pressed
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    targetedHelmet.Interact();
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.E))
+            {
+                // If it's not a helmet, but is still interactable
+                if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
                 {
                     interactObj.Interact();
                 }
             }
         }
+
+        else
+        {
+            // Nothing hit — hide all helmet labels
+            foreach (var helmetPickup in FindObjectsOfType<HelmetPickup>())
+            {
+                helmetPickup.HideLabel();
+            }
+
+        }
+
         #endregion
     }
+
     public void TakeDamage(int damage)
     {
         playerHealth -= damage;

@@ -8,7 +8,7 @@ public class BreakableCrate : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if (PlayerStatsManager.Instance.GetStrengthSystem().HasEnough(strengthRequired))
+        if (PlayerStats.strength >= strengthRequired)
         {
             Debug.Log("Crate broken!");
 
@@ -22,24 +22,28 @@ public class BreakableCrate : MonoBehaviour, IInteractable
                 rb.useGravity = true;
             }
 
-            if (hasKeyInside && keyPrefab != null)
+            if (hasKeyInside)
             {
-                GameObject key = Instantiate(keyPrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity);
+                PlayerStats.hasKey = true;
+                DialogueManager.Instance.ShowDialogue("🔑 You found a key inside!");
 
-                KeyPickupVisual keyVisual = key.GetComponent<KeyPickupVisual>();
-                if (keyVisual != null)
+                if (keyPrefab != null)
                 {
-                    keyVisual.Activate(); // 🔥 Trigger animation now
+                    GameObject key = Instantiate(keyPrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity);
+                    KeyPickupVisual keyVisual = key.GetComponent<KeyPickupVisual>();
+                    if (keyVisual != null)
+                    {
+                        keyVisual.Activate();
+                    }
                 }
             }
 
-
             GetComponent<Collider>().enabled = false;
-            Destroy(this); // Disable script
+            Destroy(this);
         }
         else
         {
-            DialogueManager.Instance.ShowDialogue("😩 I don't have the strength... maybe I need to drink something.");
+            DialogueManager.Instance.ShowDialogue(" I don't have the strength... maybe I need to drink something.");
         }
     }
 }
