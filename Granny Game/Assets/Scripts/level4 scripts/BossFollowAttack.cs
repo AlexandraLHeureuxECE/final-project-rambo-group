@@ -64,11 +64,12 @@ public class BossAI : MonoBehaviour
         yield return new WaitForSeconds(0.5f); // Small delay for animation sync
 
         // Try to damage the player
-        Player playerHealth = player.GetComponent<Player>();
+        PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
         if (playerHealth != null)
         {
             playerHealth.TakeDamage(attackDamage);
         }
+
 
         yield return new WaitForSeconds(attackCooldown);
         canAttack = true;

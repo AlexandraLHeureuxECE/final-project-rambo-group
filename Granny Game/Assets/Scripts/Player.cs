@@ -9,8 +9,6 @@ interface IInteractable {
 [RequireComponent(typeof(CharacterController))]
 public class Player : MonoBehaviour
 {
-    // variables for movement and camera
-    public int playerHealth = 100;
     public Camera playerCamera;
     public float walkSpeed = 3f;
     public float runSpeed = 6f;
@@ -45,9 +43,6 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        DialogueManager.Instance.ShowDialogue("You wake up in a mysterious basement...");
-        StartCoroutine(HideDialogueAfterDelay(3f));
-
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -138,24 +133,6 @@ public class Player : MonoBehaviour
             }
         }
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-    public void TakeDamage(int damage)
-    {
-        playerHealth -= damage;
-        Debug.Log("Player took damage! Current health: " + playerHealth);
-
-        if (playerHealth <= 0)
-        {
-            Die();
-        }
-    }
-
-    void Die()
-    {
-        Debug.Log("Player has been defeated!");
-        // You can add respawn logic here
-=======
 
     public void UpdateWeaponStats()
     {
@@ -217,6 +194,5 @@ public class Player : MonoBehaviour
                 actor.TakeDamage(attackDamage);
             }
         }
->>>>>>> level3-Andy
     }
 }
