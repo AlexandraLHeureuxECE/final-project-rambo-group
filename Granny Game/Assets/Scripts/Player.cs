@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 
-
 interface IInteractable {
     public void Interact();
 }
@@ -27,38 +26,38 @@ public class Player : MonoBehaviour
     public Transform InteractorSource;
     public float InteractRange;
 
-
     CharacterController characterController;
 
     void Start()
     {
-        DialogueManager.Instance.ShowDialogue("You wake up in a mysterious basement...");
+        DialogueManager.Instance.ShowDialogue("Ah! What happened? Where am I? I need to get out. Let me examine " +
+                                              "everything here");
         StartCoroutine(HideDialogueAfterDelay(3f));
 
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
+
+        PlayerStats.speedMultiplier = 0.5f; // Start at half speed
+
         IEnumerator HideDialogueAfterDelay(float delay)
         {
             yield return new WaitForSeconds(delay);
             DialogueManager.Instance.HideDialogue();
         }
-
     }
 
     void Update()
     {
-
-        #region Handles Movment
+        #region Handles Movement
 
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
         // Press Left Shift to run
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
-        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;
+        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * PlayerStats.speedMultiplier * Input.GetAxis("Vertical") : 0;
+        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * PlayerStats.speedMultiplier * Input.GetAxis("Horizontal") : 0;
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
@@ -96,28 +95,50 @@ public class Player : MonoBehaviour
 
         #endregion
 
-        //region Handles Interaction
+        #region Handles Interaction
 
-        if (Input.GetKeyDown(KeyCode.E))
+        Ray r = new Ray(InteractorSource.position, InteractorSource.forward);
+        Debug.DrawRay(r.origin, r.direction * InteractRange, Color.red, 2f);
+
+        if (Physics.Raycast(r, out RaycastHit hitInfo, InteractRange))
         {
-            Debug.Log("E key pressed ✅");
+            Debug.Log("Raycast HIT: " + hitInfo.collider.gameObject.name);
 
-            Ray r = new Ray(InteractorSource.position, InteractorSource.forward);
-            Debug.DrawRay(r.origin, r.direction * InteractRange, Color.red, 2f);
-
-            if (Physics.Raycast(r, out RaycastHit hitInfo, InteractRange))
+            // Hide all helmet labels first
+            foreach (var helmetPickup in FindObjectsOfType<HelmetPickup>())
             {
-                Debug.Log("Raycast HIT: " + hitInfo.collider.gameObject.name);
+                helmetPickup.HideLabel();
+            }
 
+            // Show label only for the one being aimed at
+            if (hitInfo.collider.gameObject.TryGetComponent(out HelmetPickup targetedHelmet))
+            {
+                targetedHelmet.ShowLabel();
+
+                // Interact if E is pressed
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    targetedHelmet.Interact();
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.E))
+            {
+                // If it's not a helmet, but is still interactable
                 if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
                 {
                     interactObj.Interact();
                 }
             }
-            else
+        }
+        else
+        {
+            // Nothing hit — hide all helmet labels
+            foreach (var helmetPickup in FindObjectsOfType<HelmetPickup>())
             {
-                Debug.Log("Raycast did NOT hit anything ❌");
+                helmetPickup.HideLabel();
             }
         }
+
+        #endregion
     }
 }
