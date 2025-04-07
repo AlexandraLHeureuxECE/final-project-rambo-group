@@ -1726,9 +1726,13 @@ MonoBehaviour:
   gravity: 10
   lookSpeed: 2
   lookXLimit: 45
-  canMove: 1
   InteractorSource: {fileID: 1937148727}
   InteractRange: 3
+  attackLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  hitEffect: {fileID: 0}
+  canMove: 1
 --- !u!143 &657581399
 CharacterController:
   m_ObjectHideFlags: 0

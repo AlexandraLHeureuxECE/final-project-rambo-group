@@ -29,6 +29,16 @@ public class PlayerHealth : MonoBehaviour
 
         if (healthBarUI != null)
             healthBarUI.UpdateBar(currentHealth);
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+    
+    void Die()
+    {
+        Debug.Log("Player Died!");
+        GameManager.Instance?.RespawnPlayer();
     }
 
     public void Heal(int amount)
