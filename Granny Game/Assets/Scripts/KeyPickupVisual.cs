@@ -10,11 +10,23 @@ public class KeyPickupVisual : MonoBehaviour
     private float elapsedTime;
     private bool shouldAnimate = false;
 
+    public GameObject keyParticles; // 👈 Assign in Inspector
+
     public void Activate()
     {
         startPos = transform.position;
         elapsedTime = 0f;
         shouldAnimate = true;
+
+        // ✨ Play the particle effect
+        if (keyParticles != null)
+        {
+            var ps = keyParticles.GetComponent<ParticleSystem>();
+            if (ps != null)
+            {
+                ps.Play();
+            }
+        }
     }
 
     void Update()

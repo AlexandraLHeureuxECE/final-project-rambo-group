@@ -5,11 +5,14 @@ TagManager:
   serializedVersion: 3
   tags:
   - MoveRuller
+
   - chestTop
   - padlock
   - bat
   - hammer
   - broom
+  - Door
+
   layers:
   - Default
   - TransparentFX

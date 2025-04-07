@@ -26,7 +26,6 @@ public class Player : MonoBehaviour
     float rotationX = 0;
     public bool canMove = true;
 
-    // Attack-related
     private float attackDistance;
     private float attackSpeed;
     private int attackDamage;
@@ -41,9 +40,15 @@ public class Player : MonoBehaviour
     private Dictionary<string, WeaponStats> weaponStats;
     private WeaponStats currentWeaponStats;
 
+    private PlayerHealth playerHealth;
+
     void Start()
     {
+        DialogueManager.Instance.ShowDialogue("Ah! What happened? Where am I? I need to get out. Let me examine everything here");
+        StartCoroutine(HideDialogueAfterDelay(3f));
+
         characterController = GetComponent<CharacterController>();
+        playerHealth = GetComponent<PlayerHealth>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -54,7 +59,6 @@ public class Player : MonoBehaviour
         walkSpeed = 3f;
         runSpeed = 6f;
 
-        // CHANGE WEAPON STATS HERE IF NEEDED
         weaponStats = new Dictionary<string, WeaponStats>
         {
             { "Weapon 1", new WeaponStats { name = "Hammer", damage = 1, range = 1f, attackSpeed = 0.25f } },
@@ -62,6 +66,13 @@ public class Player : MonoBehaviour
             { "Weapon 3", new WeaponStats { name = "Broom", damage = 3, range = 6f, attackSpeed = 0.5f } }
         };
 
+        PlayerStats.speedMultiplier = 0.5f;
+    }
+
+    IEnumerator HideDialogueAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        DialogueManager.Instance.HideDialogue();
     }
 
     void Update()
@@ -121,16 +132,53 @@ public class Player : MonoBehaviour
 
     void HandleInteraction()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        Ray r = new Ray(InteractorSource.position, InteractorSource.forward);
+        Debug.DrawRay(r.origin, r.direction * InteractRange, Color.red, 2f);
+
+        if (Physics.Raycast(r, out RaycastHit hitInfo, InteractRange))
         {
-            Ray r = new Ray(InteractorSource.position, InteractorSource.forward);
-            if (Physics.Raycast(r, out RaycastHit hitInfo, InteractRange))
+            Debug.Log("Raycast HIT: " + hitInfo.collider.gameObject.name);
+
+            foreach (var helmetPickup in FindObjectsOfType<HelmetPickup>())
             {
-                if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
+                helmetPickup.HideLabel();
+            }
+
+            if (hitInfo.collider.gameObject.TryGetComponent(out HelmetPickup targetedHelmet))
+            {
+                targetedHelmet.ShowLabel();
+
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    targetedHelmet.Interact();
+                }
+            }
+            else if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
+            {
+                if (Input.GetKeyDown(KeyCode.E))
                 {
                     interactObj.Interact();
                 }
             }
+        }
+        else
+        {
+            foreach (var helmetPickup in FindObjectsOfType<HelmetPickup>())
+            {
+                helmetPickup.HideLabel();
+            }
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (playerHealth != null)
+        {
+            playerHealth.TakeDamage(damage);
+        }
+        else
+        {
+            Debug.LogWarning("PlayerHealth component not found!");
         }
     }
 
@@ -156,16 +204,13 @@ public class Player : MonoBehaviour
         switch (WeaponSelectorUI.CurrentWeapon)
         {
             case "Weapon 1":
-                if (hammerAnimator != null && hammerAnimator.gameObject.activeInHierarchy)
-                    hammerAnimator.SetTrigger("Attack");
+                hammerAnimator?.SetTrigger("Attack");
                 break;
             case "Weapon 2":
-                if (metalBatAnimator != null && metalBatAnimator.gameObject.activeInHierarchy)
-                    metalBatAnimator.SetTrigger("Attack");
+                metalBatAnimator?.SetTrigger("Attack");
                 break;
             case "Weapon 3":
-                if (broomAnimator != null && broomAnimator.gameObject.activeInHierarchy)
-                    broomAnimator.SetTrigger("Attack");
+                broomAnimator?.SetTrigger("Attack");
                 break;
             default:
                 Debug.Log("No weapon selected or weapon not recognized");

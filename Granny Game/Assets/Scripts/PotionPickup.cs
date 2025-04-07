@@ -6,7 +6,8 @@ public class PotionPickup : MonoBehaviour, IInteractable
     public void Interact()
     {
         Debug.Log("Potion Interacted!");
-        DialogueManager.Instance.ShowDialogue("💪 You feel strength surge through your body!");
+        DialogueManager.Instance.ShowDialogue("I Feel so STRONG now! Lets see what else i can find, maybe the key " +
+                                              "can be inside these crates or drawers");
         StartCoroutine(HideDialogueAfterDelay(3f));
 
         IEnumerator HideDialogueAfterDelay(float delay)
@@ -15,9 +16,8 @@ public class PotionPickup : MonoBehaviour, IInteractable
             DialogueManager.Instance.HideDialogue();
         }
 
+        PlayerStatsManager.Instance.AddStrength(50); // flat +50 strength
 
-
-        PlayerStatsManager.Instance.AddStrength(50);
-        Destroy(gameObject); // destroy potion
+        Destroy(gameObject);
     }
 }

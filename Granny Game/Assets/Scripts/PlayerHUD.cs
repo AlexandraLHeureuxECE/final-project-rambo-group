@@ -1,24 +1,45 @@
-using TMPro; // Instead of UnityEngine.UI
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class PlayerHUD : MonoBehaviour
 {
-  //  public TMP_Text healthText;
- //   public TMP_Text strengthText;
-   // public TMP_Text helmetText;
+    [Header("UI Sliders")]
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private Slider strengthSlider;
+
+    [Header("Text Labels")]
+    [SerializeField] private TextMeshProUGUI healthText;
+    [SerializeField] private TextMeshProUGUI strengthText;
+
     void Start()
     {
-        Debug.Log("PlayerHUD script is running ✅");
+        // Set visual bar limits
+        healthSlider.minValue = 0;
+        healthSlider.maxValue = 100;
 
-      //  healthText.text = "Health: " + PlayerStats.currentHealth;
-      //  strengthText.text = "Strength: " + PlayerStats.strength;
+        strengthSlider.minValue = 0;
+        strengthSlider.maxValue = 100; // Always 100 visually
     }
-
 
     void Update()
     {
-       // healthText.text = "Health: " + PlayerStats.currentHealth + " / " + PlayerStats.maxHealth;
-     //   strengthText.text = "Strength: " + PlayerStats.strength + " / " + PlayerStats.strengthRequiredToBreak;
-      //  helmetText.text = PlayerStats.hasHelmet ? "Helmet: " + PlayerStats.selectedHelmet : "Helmet: None";
+        UpdateHealth(PlayerStats.currentHealth, PlayerStats.maxHealth);
+        UpdateStrength(PlayerStats.strength);
+    }
+
+    public void UpdateHealth(int current, int max)
+    {
+        healthSlider.value = (float)current / max * 100f;
+
+        if (healthText != null)
+            healthText.text = $"Health: {current}/{max}";
+    }
+
+    public void UpdateStrength(int current)
+    {
+        strengthSlider.value = Mathf.Clamp(current, 0, 100); // bar max 100
+        if (strengthText != null)
+            strengthText.text = $"Strength: {current}/100";
     }
 }

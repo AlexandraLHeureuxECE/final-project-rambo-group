@@ -18,7 +18,7 @@ public class DialogueManager : MonoBehaviour
         dialoguePanel.SetActive(false);
     }
 
-    public void ShowDialogue(string message, float duration = 3f, float typeSpeed = 0.03f)
+    public void ShowDialogue(string message, float duration = 7f, float typeSpeed = 0.02f)
     {
         dialoguePanel.SetActive(true);
 
